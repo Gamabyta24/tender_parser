@@ -15,3 +15,5 @@ tests:
 	make sort_imports
 	uv run pytest tender_parser/tests/tests.py
 	make lint
+run:
+	uv run python -m tender_parser.main
