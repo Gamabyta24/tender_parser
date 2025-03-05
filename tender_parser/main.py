@@ -1,7 +1,9 @@
 import requests
-from bs4 import BeautifulSoup
-from requests.exceptions import Timeout
+from bs4 import BeautifulSoup,XMLParsedAsHTMLWarning
+import warnings
+from requests.exceptions import Timeout, RequestException
 
+warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 LINK = "https://zakupki.gov.ru/epz/order/extendedsearch/results.html"
 FZ44 = "?fz44=on"
 PATERN = "https://zakupki.gov.ru"
@@ -47,3 +49,28 @@ def update_link(link, patern):
         return None
     new_href = "".join([patern, href.replace("view.html", "viewXml.html")])
     return new_href
+
+def get_data(link, headers=None):
+    try:
+        response = requests.get(link, headers=headers, timeout=10)
+
+        if response.status_code != 200:
+            print(f"Ошибка при получении страницы. Статус код: {response.status_code}")
+            return None
+
+        soup = BeautifulSoup(response.content, "lxml")
+
+        publish_dt = soup.find("publishdtineis")
+        if not publish_dt:
+            print("Элемент 'publishdtineis' не найден на странице.")
+            return None
+
+        data = publish_dt.text.strip()
+        return data
+
+    except RequestException as e:
+        print(f"Произошла ошибка при запросе к странице: {e}")
+        return None
+    except Exception as e:
+        print(f"Произошла неожиданная ошибка: {e}")
+        return None
