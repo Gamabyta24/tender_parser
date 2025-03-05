@@ -95,3 +95,14 @@ def process_page(page, headers, patern):
         data = get_data(link, headers)
         results[link] = data
     return results
+
+def main():
+    pages = [PAGE1,PAGE2]
+    all_results = {}
+    for page in pages:
+        results = process_page(page, HEADERS, PATERN)
+        all_results.update(results)
+    for key, item in all_results.items():
+        print(f'Ссылка:{key}, Дата:{item}')
+if __name__ == "__main__":
+    main()
