@@ -13,5 +13,5 @@ lint:
 tests:
 	make format
 	make sort_imports
+	uv run pytest tender_parser/tests/tests.py
 	make lint
-	uv run pytest parser/tests.py
