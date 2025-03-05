@@ -74,3 +74,24 @@ def get_data(link, headers=None):
     except Exception as e:
         print(f"Произошла неожиданная ошибка: {e}")
         return None
+
+def process_page(page, headers, patern):
+    html_form = get_print_form(requests, page, headers)
+    if html_form is None:
+        exit(1)
+
+    links = get_print_links(html_form)
+    if links is None:
+        exit(1)
+
+    updated_links = []
+    for link in links:
+        updated_link = update_link(link, patern)
+        if updated_link is not None:
+            updated_links.append(updated_link)
+
+    results = {}
+    for link in updated_links:
+        data = get_data(link, headers)
+        results[link] = data
+    return results
