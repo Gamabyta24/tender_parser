@@ -1,5 +1,7 @@
 import requests
+from bs4 import BeautifulSoup
 from requests.exceptions import Timeout
+
 LINK = "https://zakupki.gov.ru/epz/order/extendedsearch/results.html"
 FZ44 = "?fz44=on"
 PATERN = "https://zakupki.gov.ru"
@@ -26,3 +28,14 @@ def get_print_form(request, url, headers, timeout=5):
     except Exception as e:
         print(f"Произошла ошибка: {e}")
         return None
+
+
+def get_print_links(html):
+    if html is None:
+        print("get_ptint_link: входной аргумент None")
+        return None
+    html_parser = BeautifulSoup(html, "html.parser")
+    links = html_parser.find_all(
+        "a", href=lambda href: href and "/epz/order/notice/printForm/view.html" in href
+    )
+    return links
