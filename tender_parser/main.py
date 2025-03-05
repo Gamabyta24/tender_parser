@@ -39,3 +39,10 @@ def get_print_links(html):
         "a", href=lambda href: href and "/epz/order/notice/printForm/view.html" in href
     )
     return links
+
+def update_link(link, patern):
+    href = link.get("href", "")
+    if "view.html" not in href:
+        return None
+    new_href = "".join([patern, href.replace("view.html", "viewXml.html")])
+    return new_href
