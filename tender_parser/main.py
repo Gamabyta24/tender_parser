@@ -40,6 +40,7 @@ def get_print_links(html):
     )
     return links
 
+
 def update_link(link, patern):
     href = link.get("href", "")
     if "view.html" not in href:

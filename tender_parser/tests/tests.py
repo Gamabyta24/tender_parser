@@ -1,6 +1,6 @@
 from requests.exceptions import Timeout
 
-from tender_parser.main import get_print_form, get_print_links
+from tender_parser.main import get_print_form, get_print_links, update_link
 
 
 class ResponseFake:
@@ -83,3 +83,18 @@ def test_get_print_link_none():
     html = None
     links = get_print_links(html)
     assert links is None
+
+
+def test_update_link_with_valid_href():
+    link = {"href": "example/view.html"}
+    patern = "https://example.com/"
+    expected = "https://example.com/example/viewXml.html"
+    result = update_link(link, patern)
+    assert result == expected
+
+
+def test_update_link_without_view_html():
+    link = {"href": "example/otherpage.html"}
+    patern = "https://example.com/"
+    result = update_link(link, patern)
+    assert result is None
