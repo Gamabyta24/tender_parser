@@ -20,8 +20,12 @@
 - `pytest>=8.3.5`
 - `requests>=2.32.3`
 - `ruff>=0.9.9`
+- `celery>=5.4.0`
+- `docker>=28.0.1`
+- `redis`
 
 ## Установка (Unix-like системы)
+Установить [Docker](https://docs.docker.com/desktop/setup/install/linux/)
 
 ```sh
 pip install uv
