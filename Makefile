@@ -17,3 +17,6 @@ tests:
 	make lint
 run:
 	uv run python -m tender_parser.main
+
+tests_ci:
+	uv run pytest tender_parser/tests/tests.py
