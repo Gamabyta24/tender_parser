@@ -1,7 +1,12 @@
-import requests
-from bs4 import BeautifulSoup,XMLParsedAsHTMLWarning
 import warnings
-from requests.exceptions import Timeout, RequestException
+
+import requests
+from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
+from requests.exceptions import RequestException, Timeout
+
+from celery import Celery
+
+app = Celery("tasks", broker="redis://localhost:6379/0")
 
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 LINK = "https://zakupki.gov.ru/epz/order/extendedsearch/results.html"
@@ -50,6 +55,7 @@ def update_link(link, patern):
     new_href = "".join([patern, href.replace("view.html", "viewXml.html")])
     return new_href
 
+
 def get_data(link, headers=None):
     try:
         response = requests.get(link, headers=headers, timeout=10)
@@ -75,6 +81,8 @@ def get_data(link, headers=None):
         print(f"Произошла неожиданная ошибка: {e}")
         return None
 
+
+@app.task
 def process_page(page, headers, patern):
     html_form = get_print_form(requests, page, headers)
     if html_form is None:
@@ -96,13 +104,16 @@ def process_page(page, headers, patern):
         results[link] = data
     return results
 
+
 def main():
-    pages = [PAGE1,PAGE2]
+    pages = [PAGE1, PAGE2]
     all_results = {}
     for page in pages:
         results = process_page(page, HEADERS, PATERN)
         all_results.update(results)
     for key, item in all_results.items():
-        print(f'Ссылка:{key}, Дата:{item}')
+        print(f"Ссылка:{key}, Дата:{item}")
+
+
 if __name__ == "__main__":
     main()
